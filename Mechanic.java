@@ -12,12 +12,12 @@ public class Mechanic extends Customer {
 
     @Override
     public boolean buyItemsFromCart() throws IllegalArgumentException {
-        Cart cart = new Cart();
-        if(money < cart.calculatePrice() * 1-(reduction/100)){
-            throw new IllegalArgumentException("this person can NOT buy anything.They are broke af");
+        int moneyAfter = super.getCart().calculatePrice() - super.getCart().calculatePrice() *(reduction/100);
+        if(super.getMoney() < moneyAfter){
+            return false;
         }
-        money = money - cart.calculatePrice();
+        super.setMoney(super.getMoney()- moneyAfter);
+        super.getCart().checkOut(moneyAfter);
         return true;
-
     }
 }
