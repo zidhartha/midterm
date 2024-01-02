@@ -1,26 +1,30 @@
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Cart <T extends MarketItem> {
     private HashMap<Integer, ArrayList<T>> cart = new HashMap<>();
 
-
     public void addItem(T item,int n) throws IllegalArgumentException{
-      if(item == null){
+      if(item == null || n<=0){
           throw new IllegalArgumentException("Item can not be equal to null");
       }
         ArrayList<T> shoppingCart = cart.get(item.hashCode());
         shoppingCart.add(item);
         cart.put(item.hashCode(), shoppingCart);
+        addItem(item,n-1);
     }
 
     public boolean removeItem(T item, int n) throws IllegalArgumentException{
-        if(item == null || !cart.containsKey(item)){
+        if(item == null || !cart.containsKey(item) || n <=0){
             throw new IllegalArgumentException("this item doesnt exist or is not in the cart");
         }
-        cart.remove(item.hashCode());
+        ArrayList<T> shoppingCart = cart.get(item.hashCode());
+        shoppingCart.remove(item);
+        removeItem(item,n-1);
         return true;
-    }
+        }
+
     public int calculatePrice(){
         return cart.entrySet().stream().mapToInt(e -> e.getValue().size() * e.getValue().get(0).getPrice()).sum();
     }
